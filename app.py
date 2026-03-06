@@ -1,4 +1,7 @@
 from flask import Flask, request, jsonify, send_from_directory
+import requests
+from PIL import Image
+from io import BytesIO
 
 app = Flask(__name__, static_folder=".")
 
@@ -11,9 +14,13 @@ def generate():
 
     prompt = request.json["prompt"]
 
-    result = "Video generated for: " + prompt
+    url = f"https://image.pollinations.ai/prompt/{prompt}"
+    response = requests.get(url)
 
-    return jsonify({"video": "", "result": result})
+    img = Image.open(BytesIO(response.content))
+    img.save("output.png")
+
+    return jsonify({"image": "output.png"})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
