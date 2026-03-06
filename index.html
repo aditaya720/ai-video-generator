@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>AI Generator</title>
+<title>AI Image Generator</title>
 
 <style>
 
@@ -17,6 +17,8 @@ input{
 width:70%;
 padding:12px;
 font-size:18px;
+border-radius:6px;
+border:none;
 }
 
 button{
@@ -27,10 +29,15 @@ border:none;
 color:white;
 cursor:pointer;
 margin-top:10px;
+border-radius:6px;
+}
+
+button:hover{
+background:#16a34a;
 }
 
 #result{
-margin-top:20px;
+margin-top:30px;
 }
 
 img{
@@ -62,6 +69,13 @@ function generate(){
 
 let prompt = document.getElementById("prompt").value;
 
+if(prompt === ""){
+alert("Please enter prompt");
+return;
+}
+
+document.getElementById("result").innerHTML = "Generating...";
+
 fetch("/generate",{
 method:"POST",
 headers:{
@@ -73,9 +87,12 @@ body:JSON.stringify({prompt:prompt})
 .then(data=>{
 
 document.getElementById("result").innerHTML =
-"<img src='"+data.image+"'/>";
+"<img src='"+data.image+"' width='350'>";
 
 })
+.catch(error=>{
+document.getElementById("result").innerHTML = "Error generating image";
+});
 
 }
 
