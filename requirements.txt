@@ -1,5 +1,4 @@
-flask
-diffusers
-torch
-transformers
-opencv-python
+Flask
+gunicorn
+requests
+Pillow
