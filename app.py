@@ -1,10 +1,10 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder=".")
 
 @app.route("/")
 def home():
-    return "AI Video Generator Running"
+    return send_from_directory(".", "index.html")
 
 @app.route("/generate", methods=["POST"])
 def generate():
@@ -13,6 +13,7 @@ def generate():
 
     result = "Video generated for: " + prompt
 
-    return jsonify({"result": result})
+    return jsonify({"video": "", "result": result})
 
-app.run(host="0.0.0.0", port=5000)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=10000)
