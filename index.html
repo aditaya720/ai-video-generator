@@ -2,32 +2,74 @@
 <html>
 <head>
 <title>AI Video Generator</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#0f172a;
+color:white;
+text-align:center;
+padding:40px;
+}
+
+input{
+width:70%;
+padding:12px;
+font-size:18px;
+}
+
+button{
+padding:12px 20px;
+font-size:18px;
+background:#22c55e;
+border:none;
+color:white;
+cursor:pointer;
+margin-top:10px;
+}
+
+#video{
+margin-top:20px;
+}
+
+</style>
 </head>
 
 <body>
 
-<h2>AI Video Generator</h2>
+<h1>AI Video Generator</h1>
 
-<input id="prompt" placeholder="Enter video prompt">
-<button onclick="generate()">Generate</button>
+<p>Type prompt and generate AI video</p>
 
-<p id="result"></p>
+<input id="prompt" placeholder="beautiful girl walking in rain cinematic lighting">
+
+<br>
+
+<button onclick="generate()">Generate Video</button>
+
+<div id="video"></div>
 
 <script>
 
-async function generate(){
+function generate(){
 
-let prompt=document.getElementById("prompt").value
+let prompt = document.getElementById("prompt").value;
 
-let res=await fetch("/generate",{
+fetch("/generate",{
 method:"POST",
-headers:{"Content-Type":"application/json"},
+headers:{
+"Content-Type":"application/json"
+},
 body:JSON.stringify({prompt:prompt})
 })
+.then(res=>res.json())
+.then(data=>{
 
-let data=await res.json()
+document.getElementById("video").innerHTML =
+"<video controls width='300' src='"+data.video+"'></video>";
 
-document.getElementById("result").innerText=data.result
+})
 
 }
 
