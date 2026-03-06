@@ -10,23 +10,31 @@ app = Flask(__name__, static_folder=".")
 def home():
     return send_from_directory(".", "index.html")
 
+
 @app.route("/generate", methods=["POST"])
 def generate():
 
     data = request.get_json()
-    prompt = data["prompt"]
+    prompt = data.get("prompt", "")
 
-    # prompt encode
+    # encode prompt
     prompt_encoded = urllib.parse.quote(prompt)
 
     url = f"https://image.pollinations.ai/prompt/{prompt_encoded}"
 
-    response = requests.get(url)
+    try:
+        response = requests.get(url, timeout=30)
 
-    img = Image.open(BytesIO(response.content))
-    img.save("output.png")
+        if response.status_code != 200:
+            return jsonify({"error": "AI server error"})
 
-    return jsonify({"image": "/output.png"})
+        img = Image.open(BytesIO(response.content))
+        img.save("output.png")
+
+        return jsonify({"image": "/output.png"})
+
+    except Exception as e:
+        return jsonify({"error": str(e)})
 
 
 @app.route("/output.png")
