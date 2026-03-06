@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>AI Video Generator</title>
+<title>AI Generator</title>
 
 <style>
 
@@ -29,8 +29,14 @@ cursor:pointer;
 margin-top:10px;
 }
 
-#video{
+#result{
 margin-top:20px;
+}
+
+img{
+margin-top:20px;
+max-width:400px;
+border-radius:10px;
 }
 
 </style>
@@ -38,17 +44,17 @@ margin-top:20px;
 
 <body>
 
-<h1>AI Video Generator</h1>
+<h1>AI Image Generator</h1>
 
-<p>Type prompt and generate AI video</p>
+<p>Type prompt and generate AI image</p>
 
 <input id="prompt" placeholder="beautiful girl walking in rain cinematic lighting">
 
 <br>
 
-<button onclick="generate()">Generate Video</button>
+<button onclick="generate()">Generate</button>
 
-<div id="video"></div>
+<div id="result"></div>
 
 <script>
 
@@ -66,8 +72,8 @@ body:JSON.stringify({prompt:prompt})
 .then(res=>res.json())
 .then(data=>{
 
-document.getElementById("video").innerHTML =
-"<video controls width='300' src='"+data.video+"'></video>";
+document.getElementById("result").innerHTML =
+"<img src='"+data.image+"'/>";
 
 })
 
