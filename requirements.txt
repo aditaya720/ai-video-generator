@@ -1,0 +1,5 @@
+flask
+diffusers
+torch
+transformers
+opencv-python
