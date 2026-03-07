@@ -123,7 +123,8 @@ let data = await response.json();
 
 if(data.image){
 
-let imageUrl = data.image + "?t=" + new Date().getTime();
+// Yahan par fix kiya gaya hai: ?t= ko hata diya gaya hai
+let imageUrl = data.image; 
 
 result.innerHTML = "<img src='"+imageUrl+"' alt='AI Image' onerror=\"this.parentElement.innerHTML='<div class=error>Image load failed</div>'\">";
 
