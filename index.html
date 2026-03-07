@@ -1,35 +1,40 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>AI Image Generator</title>
 
-<style>
+<!DOCTYPE html><html>
+<head>
+<title>AI Image Generator</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>
 
 body{
-font-family:Arial;
+font-family:Arial, sans-serif;
 background:#0f172a;
 color:white;
 text-align:center;
-padding:40px;
+padding:30px;
+margin:0;
+}
+
+.container{
+max-width:600px;
+margin:auto;
 }
 
 input{
-width:70%;
-padding:12px;
-font-size:18px;
-border-radius:6px;
+width:90%;
+padding:14px;
+font-size:16px;
+border-radius:8px;
 border:none;
+outline:none;
 }
 
 button{
-padding:12px 20px;
+padding:12px 25px;
 font-size:18px;
 background:#22c55e;
 border:none;
 color:white;
 cursor:pointer;
-margin-top:10px;
-border-radius:6px;
+margin-top:15px;
+border-radius:8px;
 }
 
 button:hover{
@@ -42,61 +47,64 @@ margin-top:30px;
 
 img{
 margin-top:20px;
-max-width:400px;
-border-radius:10px;
+max-width:100%;
+border-radius:12px;
+box-shadow:0 0 10px rgba(0,0,0,0.4);
 }
 
-</style>
-</head>
+.loading{
+margin-top:20px;
+font-size:18px;
+color:#38bdf8;
+}
 
-<body>
+.error{
+color:#ef4444;
+margin-top:20px;
+}
 
-<h1>AI Image Generator</h1>
+</style></head><body><div class="container"><h1>AI Image Generator</h1>
+<p>Type prompt and generate AI image</p><input id="prompt" placeholder="beautiful girl walking in rain cinematic lighting"><br><button onclick="generate()">Generate</button>
 
-<p>Type prompt and generate AI image</p>
+<div id="result"></div></div><script>
 
-<input id="prompt" placeholder="beautiful girl walking in rain cinematic lighting">
+async function generate(){
 
-<br>
+let prompt = document.getElementById("prompt").value.trim();
+let result = document.getElementById("result");
 
-<button onclick="generate()">Generate</button>
-
-<div id="result"></div>
-
-<script>
-
-function generate(){
-
-let prompt = document.getElementById("prompt").value;
-
-if(prompt === ""){
+if(prompt.length === 0){
 alert("Please enter prompt");
 return;
 }
 
-document.getElementById("result").innerHTML = "Generating...";
+result.innerHTML = "<div class='loading'>Generating image...</div>";
 
-fetch("/generate",{
+try{
+
+let response = await fetch("/generate",{
 method:"POST",
 headers:{
 "Content-Type":"application/json"
 },
 body:JSON.stringify({prompt:prompt})
-})
-.then(res=>res.json())
-.then(data=>{
-
-document.getElementById("result").innerHTML =
-"<img src='"+data.image+"' width='350'>";
-
-})
-.catch(error=>{
-document.getElementById("result").innerHTML = "Error generating image";
 });
+
+let data = await response.json();
+
+if(data.image){
+result.innerHTML = "<img src='"+data.image+"' alt='AI Image'>";
+}else{
+result.innerHTML = "<div class='error'>Image generation failed</div>";
+}
+
+}catch(e){
+
+result.innerHTML = "<div class='error'>Server error</div>";
 
 }
 
-</script>
+}
 
-</body>
+</script></body>
 </html>
