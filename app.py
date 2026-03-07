@@ -1,4 +1,6 @@
 from flask import Flask, request, jsonify, send_from_directory
+import requests
+import base64
 import urllib.parse
 
 app = Flask(__name__, static_folder=".")
@@ -11,17 +13,21 @@ def home():
 def generate():
 
     data = request.get_json()
-    prompt = data.get("prompt", "")
+    prompt = data.get("prompt","")
 
     if prompt == "":
-        return jsonify({"error": "No prompt"})
+        return jsonify({"error":"no prompt"})
 
     prompt_encoded = urllib.parse.quote(prompt)
 
-    image_url = "https://image.pollinations.ai/prompt/" + prompt_encoded
+    url = f"https://image.pollinations.ai/prompt/{prompt_encoded}"
+
+    response = requests.get(url)
+
+    image_base64 = base64.b64encode(response.content).decode("utf-8")
 
     return jsonify({
-        "image": image_url
+        "image": "data:image/png;base64," + image_base64
     })
 
 if __name__ == "__main__":
