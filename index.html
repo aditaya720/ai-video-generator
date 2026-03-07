@@ -1,7 +1,13 @@
+<!DOCTYPE html>
+<html>
 
-<!DOCTYPE html><html>
 <head>
-<title>AI Image Generator</title><meta name="viewport" content="width=device-width, initial-scale=1"><style>
+
+<title>AI Image Generator</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
 
 body{
 font-family:Arial, sans-serif;
@@ -63,10 +69,29 @@ color:#ef4444;
 margin-top:20px;
 }
 
-</style></head><body><div class="container"><h1>AI Image Generator</h1>
-<p>Type prompt and generate AI image</p><input id="prompt" placeholder="beautiful girl walking in rain cinematic lighting"><br><button onclick="generate()">Generate</button>
+</style>
 
-<div id="result"></div></div><script>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>AI Image Generator</h1>
+
+<p>Type prompt and generate AI image</p>
+
+<input id="prompt" placeholder="beautiful girl walking in rain cinematic lighting">
+
+<br>
+
+<button onclick="generate()">Generate</button>
+
+<div id="result"></div>
+
+</div>
+
+<script>
 
 async function generate(){
 
@@ -90,12 +115,22 @@ headers:{
 body:JSON.stringify({prompt:prompt})
 });
 
+if(!response.ok){
+throw new Error("Server error");
+}
+
 let data = await response.json();
 
 if(data.image){
-result.innerHTML = "<img src='"+data.image+"' alt='AI Image'>";
+
+let imageUrl = data.image + "?t=" + new Date().getTime();
+
+result.innerHTML = "<img src='"+imageUrl+"' alt='AI Image' onerror=\"this.parentElement.innerHTML='<div class=error>Image load failed</div>'\">";
+
 }else{
+
 result.innerHTML = "<div class='error'>Image generation failed</div>";
+
 }
 
 }catch(e){
@@ -106,5 +141,7 @@ result.innerHTML = "<div class='error'>Server error</div>";
 
 }
 
-</script></body>
+</script>
+
+</body>
 </html>
